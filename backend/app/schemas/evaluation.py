@@ -1,5 +1,5 @@
 from typing import List, Dict, Any, Optional
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict
 
 class NavigationMetrics(BaseModel):
     success_rate: float # SR (0.0 to 1.0)
@@ -22,6 +22,8 @@ class LanguageEvaluationSummary(BaseModel):
     avg_steps: float
 
 class EvaluationResultSchema(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
     id: str
     dataset_name: str
     split_name: str
@@ -37,6 +39,3 @@ class EvaluationResultSchema(BaseModel):
     average_steps: float
     latency_avg_ms: float
     language_breakdown: Optional[List[LanguageEvaluationSummary]] = None
-
-    class Config:
-        from_attributes = True

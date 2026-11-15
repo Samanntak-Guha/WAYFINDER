@@ -1,9 +1,15 @@
 import os
 from typing import List, Union
 from pydantic import AnyHttpUrl, validator
-from pydantic_settings import BaseSettings
+from pydantic_settings import BaseSettings, SettingsConfigDict
 
 class Settings(BaseSettings):
+    model_config = SettingsConfigDict(
+        case_sensitive=True,
+        env_file=".env",
+        extra="allow"
+    )
+
     PROJECT_NAME: str = "WAYFINDER"
     VERSION: str = "1.0.0"
     API_V1_STR: str = "/api/v1"
@@ -42,10 +48,5 @@ class Settings(BaseSettings):
         "http://127.0.0.1:8000",
         "*"
     ]
-
-    class Config:
-        case_sensitive = True
-        env_file = ".env"
-        extra = "allow"
 
 settings = Settings()

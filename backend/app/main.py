@@ -1,5 +1,14 @@
+import os
+import sys
 import logging
+from pathlib import Path
 from contextlib import asynccontextmanager
+
+# Ensure repository root is on sys.path regardless of deployment CWD
+_repo_root = str(Path(__file__).resolve().parent.parent.parent)
+if _repo_root not in sys.path:
+    sys.path.insert(0, _repo_root)
+
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.middleware.gzip import GZipMiddleware

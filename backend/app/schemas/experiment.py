@@ -1,6 +1,6 @@
 from typing import List, Dict, Any, Optional
 from datetime import datetime
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict
 
 class ExperimentCreate(BaseModel):
     name: str
@@ -10,6 +10,8 @@ class ExperimentCreate(BaseModel):
     model_config_id: Optional[str] = None
 
 class ExperimentResponse(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
     id: str
     name: str
     description: Optional[str] = None
@@ -20,9 +22,6 @@ class ExperimentResponse(BaseModel):
     total_episodes: int = 0
     created_at: datetime
     completed_at: Optional[datetime] = None
-
-    class Config:
-        from_attributes = True
 
 class ModelTestRequest(BaseModel):
     provider: str # "freellmapi", "nvidia_nim", "custom_openai"

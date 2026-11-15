@@ -1,6 +1,6 @@
 from typing import Optional
 from datetime import datetime
-from pydantic import BaseModel, EmailStr
+from pydantic import BaseModel, EmailStr, ConfigDict
 
 class Token(BaseModel):
     access_token: str
@@ -41,6 +41,8 @@ class PasswordResetConfirm(BaseModel):
     new_password: str
 
 class UserResponse(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
     id: str
     email: str
     full_name: Optional[str] = None
@@ -50,6 +52,3 @@ class UserResponse(BaseModel):
     theme: Optional[str] = "dark"
     reduced_motion: Optional[bool] = False
     created_at: Optional[datetime] = None
-
-    class Config:
-        from_attributes = True

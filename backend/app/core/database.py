@@ -3,19 +3,31 @@ from sqlalchemy.orm import declarative_base
 from sqlalchemy import event
 from backend.app.core.config import settings
 
+def normalize_database_url(url: str) -> str:
+    """Normalize PostgreSQL URLs injected by cloud hosts (Render, Railway, Heroku) to use asyncpg driver."""
+    if not url:
+        return "sqlite+aiosqlite:///./wayfinder.db"
+    if url.startswith("postgres://"):
+        return url.replace("postgres://", "postgresql+asyncpg://", 1)
+    if url.startswith("postgresql://") and not url.startswith("postgresql+asyncpg://"):
+        return url.replace("postgresql://", "postgresql+asyncpg://", 1)
+    return url
+
+ASYNC_DATABASE_URL = normalize_database_url(settings.DATABASE_URL)
+
 # Engine configuration
 connect_args = {}
-if "sqlite" in settings.DATABASE_URL:
+if "sqlite" in ASYNC_DATABASE_URL:
     connect_args = {"check_same_thread": False}
 
 engine = create_async_engine(
-    settings.DATABASE_URL,
+    ASYNC_DATABASE_URL,
     echo=False,
     connect_args=connect_args,
     pool_pre_ping=True
 )
 
-if "sqlite" in settings.DATABASE_URL:
+if "sqlite" in ASYNC_DATABASE_URL:
     @event.listens_for(engine.sync_engine, "connect")
     def set_sqlite_pragma(dbapi_connection, connection_record):
         cursor = dbapi_connection.cursor()
