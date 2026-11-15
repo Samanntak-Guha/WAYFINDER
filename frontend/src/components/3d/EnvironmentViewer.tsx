@@ -20,7 +20,7 @@ interface EnvironmentViewerProps {
 }
 
 // Visual agent marker with orientation cone and glowing aura
-function AgentMarker({
+const AgentMarker = React.memo(function AgentMarker({
   position,
   heading = 0,
 }: {
@@ -33,7 +33,7 @@ function AgentMarker({
   useFrame(({ clock }) => {
     if (ringRef.current) {
       const t = clock.getElapsedTime();
-      const scale = 1 + Math.sin(t * 3) * 0.15;
+      const scale = 1 + Math.sin(t * 2.5) * 0.12;
       ringRef.current.scale.set(scale, scale, scale);
     }
   });
@@ -44,21 +44,21 @@ function AgentMarker({
     <group ref={meshRef} position={position}>
       {/* Outer Pulse Ring */}
       <mesh ref={ringRef} rotation={[-Math.PI / 2, 0, 0]} position={[0, 0.05, 0]}>
-        <ringGeometry args={[0.55, 0.7, 32]} />
+        <ringGeometry args={[0.55, 0.7, 24]} />
         <meshBasicMaterial color="#B7C5A5" transparent opacity={0.6} side={THREE.DoubleSide} />
       </mesh>
 
       {/* Directional Heading Pointer Cone */}
       <group rotation={[0, -headingRad, 0]}>
         <mesh position={[0, 0.45, 0.35]} rotation={[Math.PI / 2, 0, 0]}>
-          <coneGeometry args={[0.2, 0.5, 16]} />
+          <coneGeometry args={[0.2, 0.5, 12]} />
           <meshStandardMaterial color="#B7C5A5" emissive="#B7C5A5" emissiveIntensity={0.6} />
         </mesh>
       </group>
 
       {/* Center Beacon Orb */}
       <mesh position={[0, 0.35, 0]}>
-        <sphereGeometry args={[0.28, 24, 24]} />
+        <sphereGeometry args={[0.28, 16, 16]} />
         <meshStandardMaterial
           color="#F1F0E9"
           emissive="#B7C5A5"
@@ -69,10 +69,10 @@ function AgentMarker({
       </mesh>
     </group>
   );
-}
+});
 
 // 3D Graph Edges between viewpoints
-function GraphEdges({
+const GraphEdges = React.memo(function GraphEdges({
   edges,
   nodesMap,
   visitedNodes,
@@ -113,10 +113,10 @@ function GraphEdges({
       })}
     </group>
   );
-}
+});
 
 // Viewpoint Nodes
-function ViewpointNodes({
+const ViewpointNodes = React.memo(function ViewpointNodes({
   nodes,
   currentId,
   goalId,
@@ -174,7 +174,7 @@ function ViewpointNodes({
                 document.body.style.cursor = "auto";
               }}
             >
-              <sphereGeometry args={[scale, 20, 20]} />
+              <sphereGeometry args={[scale, 16, 16]} />
               <meshStandardMaterial
                 color={color}
                 emissive={emissive}
@@ -200,7 +200,7 @@ function ViewpointNodes({
       })}
     </group>
   );
-}
+});
 
 export function EnvironmentViewer({
   nodes,
@@ -230,10 +230,12 @@ export function EnvironmentViewer({
 
   return (
     <div className={`relative rounded-2xl overflow-hidden bg-[#0A0B09] border border-glass-border shadow-glass ${className}`}>
-      {/* 3D Canvas */}
+      {/* 3D Canvas with High-Performance Constraints */}
       <Canvas
+        dpr={[1, 1.5]}
+        performance={{ min: 0.5 }}
         camera={{ position: [currentCoords[0] + 6, 9, currentCoords[2] + 9], fov: 48 }}
-        gl={{ antialias: true, alpha: false }}
+        gl={{ antialias: true, alpha: false, powerPreference: "high-performance", stencil: false }}
       >
         <color attach="background" args={["#0C0D0B"]} />
         <ambientLight intensity={0.65} />

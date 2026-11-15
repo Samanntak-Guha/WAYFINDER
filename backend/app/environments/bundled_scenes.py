@@ -272,13 +272,21 @@ def build_loft_graph() -> EnvironmentGraph:
         g.add_edge(u, v)
     return g
 
+_GRAPH_CACHE: Dict[str, EnvironmentGraph] = {}
+
 def get_environment_graph(env_id: str) -> EnvironmentGraph:
+    if env_id in _GRAPH_CACHE:
+        return _GRAPH_CACHE[env_id]
+
     if env_id == "env_residence_01":
-        return build_residence_graph()
+        graph = build_residence_graph()
     elif env_id == "env_gallery_02":
-        return build_gallery_graph()
+        graph = build_gallery_graph()
     elif env_id == "env_loft_03":
-        return build_loft_graph()
+        graph = build_loft_graph()
     else:
         # Fallback to residence
-        return build_residence_graph()
+        graph = build_residence_graph()
+
+    _GRAPH_CACHE[env_id] = graph
+    return graph

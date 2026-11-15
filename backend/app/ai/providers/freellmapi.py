@@ -16,7 +16,7 @@ class FreeLLMProvider(BaseLLMProvider):
         self.api_key = api_key or settings.FREE_LLM_API_KEY
         self.base_url = (base_url or settings.FREE_LLM_API_BASE_URL).rstrip("/")
         self.default_model = default_model or settings.FREE_LLM_API_MODEL
-        self.timeout = 25.0
+        self.timeout = 4.0
 
     def get_headers(self) -> Dict[str, str]:
         headers = {"Content-Type": "application/json"}

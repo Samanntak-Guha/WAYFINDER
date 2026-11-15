@@ -16,7 +16,7 @@ class NvidiaNimProvider(BaseLLMProvider):
         self.api_key = api_key or settings.NVIDIA_NIM_API_KEY
         self.base_url = (base_url or settings.NVIDIA_NIM_BASE_URL).rstrip("/")
         self.default_model = default_model or settings.NVIDIA_NIM_MODEL
-        self.timeout = 25.0
+        self.timeout = 5.0
 
     def get_headers(self) -> Dict[str, str]:
         headers = {"Content-Type": "application/json"}

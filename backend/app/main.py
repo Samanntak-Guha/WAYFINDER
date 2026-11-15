@@ -2,6 +2,7 @@ import logging
 from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.middleware.gzip import GZipMiddleware
 from sqlalchemy.future import select
 
 from backend.app.core.config import settings
@@ -88,7 +89,8 @@ app = FastAPI(
     lifespan=lifespan
 )
 
-# CORS Middleware
+# Response Compression & CORS Middleware
+app.add_middleware(GZipMiddleware, minimum_size=1000)
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"], # Permissive for local dev & Vercel previews

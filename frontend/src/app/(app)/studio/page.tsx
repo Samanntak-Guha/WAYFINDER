@@ -19,8 +19,8 @@ import {
   Cpu,
   Globe2,
 } from "lucide-react";
+import dynamic from "next/dynamic";
 import { AppShell } from "@/components/layout/AppShell";
-import { EnvironmentViewer } from "@/components/3d/EnvironmentViewer";
 import { Button } from "@/components/ui/Button";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/Card";
 import { Badge } from "@/components/ui/Badge";
@@ -28,6 +28,19 @@ import { Input } from "@/components/ui/Input";
 import { api } from "@/lib/api";
 import { formatNumber, formatPercent } from "@/lib/utils";
 import { EnvironmentMetadata, NavigationEpisodeState, CandidateAction, UncertaintyFactors } from "@/types";
+
+const EnvironmentViewer = dynamic(
+  () => import("@/components/3d/EnvironmentViewer").then((mod) => mod.EnvironmentViewer),
+  {
+    ssr: false,
+    loading: () => (
+      <div className="w-full h-full min-h-[500px] rounded-2xl bg-[#0A0B09] border border-glass-border flex flex-col items-center justify-center gap-3">
+        <div className="w-8 h-8 rounded-full border-2 border-accent/25 border-t-accent animate-spin" />
+        <span className="font-mono text-xs text-muted">Initializing 3D Spatial Canvas...</span>
+      </div>
+    ),
+  }
+);
 
 export default function StudioPage() {
   // Environments & Models lists
